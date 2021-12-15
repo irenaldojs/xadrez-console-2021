@@ -9,6 +9,8 @@ namespace xadrez_console_2021
         {
             Table tab = new Table(8, 8);
 
+            Screen.PrintTable(tab);
+
             Console.ReadLine();
         }
     }

@@ -16,5 +16,10 @@ namespace table
             this.Colunms = colunms;
             pieces = new Piece[Rows, Colunms];
         }
+
+        public Piece GetPiece (int row, int colunm)
+        {
+            return pieces[row, colunm];
+        }
     }
 }
