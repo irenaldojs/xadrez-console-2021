@@ -21,5 +21,10 @@ namespace table
         {
             return pieces[row, colunm];
         }
+
+        public void PlacePiece(Piece p, Position pos)
+        {
+            pieces[pos.Row, pos.Colunm] = p;
+        }
     }
 }
