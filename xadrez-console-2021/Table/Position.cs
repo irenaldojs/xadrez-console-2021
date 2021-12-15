@@ -1,5 +1,4 @@
-﻿
-namespace Table
+﻿namespace table
 {
     class Position
     {
