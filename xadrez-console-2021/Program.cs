@@ -1,4 +1,5 @@
 ﻿using System;
+using Table;
 
 namespace xadrez_console_2021
 {
@@ -6,7 +7,11 @@ namespace xadrez_console_2021
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Position p = new Position(3, 4);
+
+            Console.WriteLine("Posição: " + p);
+
+            Console.ReadLine();
         }
     }
 }
