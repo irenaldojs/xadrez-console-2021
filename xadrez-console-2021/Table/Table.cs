@@ -21,10 +21,41 @@ namespace table
         {
             return pieces[row, colunm];
         }
+        public Piece GetPiece(Position p)
+        {
+            return pieces[p.Row, p.Colunm];
+        }
+
+        public bool ContainPiece(Position pos)
+        {
+            ValidatePosition(pos);
+            return GetPiece(pos) != null;
+        }
 
         public void PlacePiece(Piece p, Position pos)
         {
+            if (ContainPiece(pos))
+            {
+                throw new Exception("Já existe peça nesta posição!");
+            }
             pieces[pos.Row, pos.Colunm] = p;
+            p.position = pos;
+        }
+
+        public bool ValidPosition(Position pos)
+        {
+            if (pos.Row < 0 || pos.Row >= Rows ||
+                pos.Colunm < 0 || pos.Colunm >= Colunms) return false;
+
+            return true;
+        }
+
+        public void ValidatePosition(Position pos)
+        {
+            if (!ValidPosition(pos))
+            {
+                throw new Exception("Posição inválida!");
+            }
         }
     }
 }
