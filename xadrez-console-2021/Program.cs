@@ -9,20 +9,10 @@ namespace xadrez_console_2021
     {
         static void Main(string[] args)
         {
-            try {
-                Table tab = new Table(8, 8);
+            PositionChess pos = new PositionChess('c', 7);
 
-                tab.PlacePiece(new Tower(tab, Color.Preta), new Position(0, 0));
-                tab.PlacePiece(new Tower(tab, Color.Preta), new Position(1, 3));
-                tab.PlacePiece(new King(tab, Color.Preta), new Position(0, 0));
-
-                Screen.PrintTable(tab);
-            }
-            catch(TableException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            
+            Console.WriteLine(pos);
+            Console.WriteLine(pos.ToPosition());
 
             Console.ReadLine();
         }

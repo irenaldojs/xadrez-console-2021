@@ -36,7 +36,7 @@ namespace table
         {
             if (ContainPiece(pos))
             {
-                throw new Exception("Já existe peça nesta posição!");
+                throw new TableException("Já existe peça nesta posição!");
             }
             pieces[pos.Row, pos.Colunm] = p;
             p.position = pos;
@@ -54,7 +54,7 @@ namespace table
         {
             if (!ValidPosition(pos))
             {
-                throw new Exception("Posição inválida!");
+                throw new TableException("Posição inválida!");
             }
         }
     }
