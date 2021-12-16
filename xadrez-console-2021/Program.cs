@@ -12,8 +12,22 @@ namespace xadrez_console_2021
             try
             {
                 GameController game = new GameController();
+                while (!game.endGame)
+                {
+                    Console.Clear();
+                    Screen.PrintTable(game.tab);
 
-                Screen.PrintTable(game.tab);
+                    Console.WriteLine();
+                    Console.Write("Digite a origem: ");
+                    Position origim = Screen.ReadPositionChess().ToPosition();
+                    Console.Write("Digite o destino: ");
+                    Position destin = Screen.ReadPositionChess().ToPosition();
+
+                    game.PlayMove(origim, destin);
+
+                }
+
+                
             }
             catch (TableException e)
             {

@@ -9,21 +9,23 @@ namespace chess
         public Table tab { get; private set; }
         private int turn;
         private Color currentPlayer;
+        public bool endGame { get; set; }
 
         public GameController()
         {
             tab = new Table(8, 8);
             turn = 1;
             currentPlayer = Color.White;
+            endGame = false;
             InsertPieces();
         }
 
-        public void PlayMove(Position origin, Position destination)
+        public void PlayMove(Position origin, Position destin)
         {
             Piece p = tab.RemovePiece(origin);
             p.AdStep();
-            Piece capturePiece = tab.RemovePiece(destination);
-            tab.PlacePiece(p, destination);
+            Piece capturePiece = tab.RemovePiece(destin);
+            tab.PlacePiece(p, destin);
         }
 
         private void InsertPieces()
