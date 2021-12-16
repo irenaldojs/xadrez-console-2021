@@ -17,5 +17,10 @@ namespace table
             this.tab = tab;
             this.numberSteps = 0;
         }
+
+        public void AdStep()
+        {
+            numberSteps++;
+        }
     }
 }

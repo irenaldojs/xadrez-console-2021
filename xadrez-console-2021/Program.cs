@@ -11,14 +11,9 @@ namespace xadrez_console_2021
         {
             try
             {
-                Table tab = new Table(8, 8);
-                tab.PlacePiece(new Tower(tab, Color.Black), new Position(0,0));
-                tab.PlacePiece(new Tower(tab, Color.Black), new Position(1, 3));
-                tab.PlacePiece(new King(tab, Color.Black), new Position(0, 2));
+                GameController game = new GameController();
 
-                tab.PlacePiece(new Tower(tab, Color.White), new Position(3, 5));
-
-                Screen.PrintTable(tab);
+                Screen.PrintTable(game.tab);
             }
             catch (TableException e)
             {
