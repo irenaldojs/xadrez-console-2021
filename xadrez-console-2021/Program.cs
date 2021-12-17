@@ -20,6 +20,12 @@ namespace xadrez_console_2021
                     Console.WriteLine();
                     Console.Write("Digite a origem: ");
                     Position origim = Screen.ReadPositionChess().ToPosition();
+                    
+                    bool[,] movementsAllowed = game.tab.GetPiece(origim).MovementsAllowed();
+                    Console.Clear();
+                    Screen.PrintTable(game.tab, movementsAllowed);
+
+                    Console.WriteLine();
                     Console.Write("Digite o destino: ");
                     Position destin = Screen.ReadPositionChess().ToPosition();
 

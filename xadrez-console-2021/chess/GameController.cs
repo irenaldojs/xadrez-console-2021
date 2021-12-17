@@ -24,7 +24,7 @@ namespace chess
         {
             Piece p = tab.RemovePiece(origin);
             p.AdStep();
-            Piece capturePiece = tab.RemovePiece(destin);
+            // Piece capturePiece = tab.RemovePiece(destin);
             tab.PlacePiece(p, destin);
         }
 

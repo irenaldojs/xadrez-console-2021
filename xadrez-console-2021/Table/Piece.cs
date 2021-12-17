@@ -2,7 +2,7 @@
 
 namespace table
 {
-    class Piece
+    abstract class Piece
     {
         public Position position { get; set; }
         public Table tab { get; protected set; }
@@ -10,17 +10,19 @@ namespace table
         public int numberSteps { get; protected set; }
         
 
-        public Piece(Table tab, Color color)
+        public Piece(Table tabaux, Color coloraux)
         {
-            this.position = null;
-            this.color = color;
-            this.tab = tab;
-            this.numberSteps = 0;
+            position = null;
+            color = coloraux;
+            tab = tabaux;
+            numberSteps = 0;
         }
 
         public void AdStep()
         {
             numberSteps++;
         }
+
+        public abstract bool[,] MovementsAllowed();
     }
 }
