@@ -7,8 +7,8 @@ namespace chess
     class GameController
     {
         public Table tab { get; private set; }
-        private int turn;
-        private Color currentPlayer;
+        public int turn { get; private set; }
+        public Color currentPlayer { get; private set; }
         public bool endGame { get; set; }
 
         public GameController()
@@ -27,7 +27,52 @@ namespace chess
             // Piece capturePiece = tab.RemovePiece(destin);
             tab.PlacePiece(p, destin);
         }
+        public void ValidatePositionOfOrigin(Position pos)
+        {
+            if (tab.GetPiece(pos) == null)
+            {
+                throw new TableException("Não existe peça na posição de origem escolhida!");
+            }
+            if(currentPlayer != tab.GetPiece(pos).color)
+            {
+                throw new TableException("A peça de origem atual não é a sua!");
+            }
+            if (!tab.GetPiece(pos).ThereArePossibleMoves())
+            {
+                throw new TableException("Não há movimentos possíveis para a peça de origem escolhida!");
+            }
+        }
 
+        public void ValidatePositionOfDestin(Position origin, Position destin)
+        {
+            if (!tab.GetPiece(origin).CanMoveTo(destin))
+            {
+                throw new TableException("Posição de destino invalida!");
+            }
+
+        }
+
+        public void PlayTurn(Position origin, Position destin)
+        {
+            PlayMove(origin, destin);
+            turn++;
+            ChangePlayer();
+
+        }
+        private void ChangePlayer()
+        {
+            if (currentPlayer == Color.White)
+                currentPlayer = Color.Black;
+            else
+                currentPlayer = Color.White;
+        }
+        public string NameColor()
+        {
+            if (currentPlayer == Color.White)
+                return "Branca";
+            else
+                return "Preta";
+        }
         private void InsertPieces()
         {
             tab.PlacePiece(new Tower(tab, Color.White), new PositionChess('c', 1).ToPosition());

@@ -18,6 +18,28 @@ namespace table
             numberSteps = 0;
         }
 
+        public bool ThereArePossibleMoves()
+        {
+            bool[,] mat = MovementsAllowed();
+            for (int i = 0; i < tab.Rows; i++)
+            {
+                for(int j = 0; j < tab.Colunms; j++)
+                {
+                    if (mat[i, j])
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public bool CanMoveTo(Position pos)
+        {
+            return MovementsAllowed()[pos.Row, pos.Colunm];
+        }
+
         public void AdStep()
         {
             numberSteps++;
