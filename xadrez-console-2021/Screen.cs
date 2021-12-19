@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using table;
 using chess;
 using table.Enums;
@@ -7,6 +8,49 @@ namespace xadrez_console_2021
 {
     class Screen
     {
+        public static void PrintGame(GameController game)
+        {
+            PrintTable(game.tab);
+            Console.WriteLine();
+            PrintPiesesCaptured(game);
+            Console.WriteLine("Turno: " + game.turn);
+            Console.WriteLine("Aguardando a jogada: " + game.NameColor());
+            Console.WriteLine();
+        }
+        public static void PrintGame(GameController game, bool[,] movementsAllowed)
+        {
+            PrintTable(game.tab, movementsAllowed);
+            Console.WriteLine();
+            PrintPiesesCaptured(game);
+            Console.WriteLine("Turno: " + game.turn);
+            Console.WriteLine("Aguardando a jogada: " + game.NameColor());
+            Console.WriteLine();
+        }
+        public static void PrintPiesesCaptured(GameController game)
+        {
+            Console.WriteLine("Peças capturadas:");
+            Console.Write("Brancas: ");
+            PrintHashSet(game.PiecesCapturedColor(Color.White));
+            Console.WriteLine();
+            Console.Write("Pretas: ");
+            ConsoleColor aux = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            PrintHashSet(game.PiecesCapturedColor(Color.Black));
+            Console.ForegroundColor = aux;
+            Console.WriteLine();
+
+        }
+
+        public static void PrintHashSet(HashSet<Piece> hashset)
+        {
+            Console.Write("[");
+            foreach(Piece x in hashset)
+            {
+                Console.Write(x + " ");
+            }
+            Console.Write(" ]");
+        }
+
         public static void PrintTable(Table tab)
         {
             for (int i = 0; i < tab.Rows; i++)

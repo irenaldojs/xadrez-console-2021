@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using table;
 using table.Enums;
 
@@ -10,6 +11,8 @@ namespace chess
         public int turn { get; private set; }
         public Color currentPlayer { get; private set; }
         public bool endGame { get; set; }
+        private HashSet<Piece> pieces;
+        private HashSet<Piece> captured;
 
         public GameController()
         {
@@ -17,6 +20,8 @@ namespace chess
             turn = 1;
             currentPlayer = Color.White;
             endGame = false;
+            pieces = new HashSet<Piece>();
+            captured = new HashSet<Piece>();
             InsertPieces();
         }
 
@@ -24,8 +29,11 @@ namespace chess
         {
             Piece p = tab.RemovePiece(origin);
             p.AdStep();
-            // Piece capturePiece = tab.RemovePiece(destin);
+            Piece capturePiece = tab.RemovePiece(destin);
             tab.PlacePiece(p, destin);
+            if(capturePiece != null)
+                captured.Add(capturePiece);
+
         }
         public void ValidatePositionOfOrigin(Position pos)
         {
@@ -66,6 +74,31 @@ namespace chess
             else
                 currentPlayer = Color.White;
         }
+
+        public HashSet<Piece> PiecesCapturedColor(Color color)
+        {
+            HashSet<Piece> aux = new HashSet<Piece>();
+            foreach(Piece x in captured)
+            {
+                if (x.color == color)
+                    aux.Add(x);
+            }
+            return aux;
+        }
+
+        public HashSet<Piece> PiecesInGameColor(Color color)
+        {
+            HashSet<Piece> aux = new HashSet<Piece>();
+            foreach (Piece x in captured)
+            {
+                if (x.color == color)
+                    aux.Add(x);
+            }
+            aux.ExceptWith(PiecesCapturedColor(color));
+
+            return aux;
+        }
+
         public string NameColor()
         {
             if (currentPlayer == Color.White)
@@ -73,21 +106,28 @@ namespace chess
             else
                 return "Preta";
         }
+
+        public void InsertNewPiece(char column, int row, Piece piece)
+        {
+            tab.PlacePiece(piece, new PositionChess(column, row).ToPosition());
+            pieces.Add(piece);
+        }
+
         private void InsertPieces()
         {
-            tab.PlacePiece(new Tower(tab, Color.White), new PositionChess('c', 1).ToPosition());
-            tab.PlacePiece(new Tower(tab, Color.White), new PositionChess('c', 2).ToPosition());
-            tab.PlacePiece(new Tower(tab, Color.White), new PositionChess('d', 2).ToPosition());
-            tab.PlacePiece(new Tower(tab, Color.White), new PositionChess('e', 2).ToPosition());
-            tab.PlacePiece(new Tower(tab, Color.White), new PositionChess('e', 1).ToPosition());
-            tab.PlacePiece(new King(tab, Color.White), new PositionChess('d', 1).ToPosition());
+            InsertNewPiece('c', 1, new Tower(tab, Color.White));
+            InsertNewPiece('c', 2, new Tower(tab, Color.White));
+            InsertNewPiece('d', 2, new Tower(tab, Color.White));
+            InsertNewPiece('e', 2, new Tower(tab, Color.White));
+            InsertNewPiece('e', 1, new Tower(tab, Color.White));
+            InsertNewPiece('d', 1, new King(tab, Color.White));
             // ----------------------------- //
-            tab.PlacePiece(new Tower(tab, Color.Black), new PositionChess('c', 7).ToPosition());
-            tab.PlacePiece(new Tower(tab, Color.Black), new PositionChess('c', 8).ToPosition());
-            tab.PlacePiece(new Tower(tab, Color.Black), new PositionChess('d', 7).ToPosition());
-            tab.PlacePiece(new Tower(tab, Color.Black), new PositionChess('e', 7).ToPosition());
-            tab.PlacePiece(new Tower(tab, Color.Black), new PositionChess('e', 8).ToPosition());
-            tab.PlacePiece(new King(tab, Color.Black), new PositionChess('d', 8).ToPosition());
+            InsertNewPiece('c', 7, new Tower(tab, Color.Black));
+            InsertNewPiece('c', 8, new Tower(tab, Color.Black));
+            InsertNewPiece('d', 7, new Tower(tab, Color.Black));
+            InsertNewPiece('e', 7, new Tower(tab, Color.Black));
+            InsertNewPiece('e', 8, new Tower(tab, Color.Black));
+            InsertNewPiece('d', 8, new King(tab, Color.Black));
 
         }
     }
