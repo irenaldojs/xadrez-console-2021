@@ -14,12 +14,19 @@ namespace xadrez_console_2021
             Console.WriteLine();
             PrintPiesesCaptured(game);
             Console.WriteLine("Turno: " + game.turn);
-            Console.WriteLine("Aguardando a jogada: " + game.NameColor());
-            Console.WriteLine();
-            if (game.check)
+            if (!game.endGame)
             {
-                Console.WriteLine("XEQUE!");
-                Console.WriteLine();
+                Console.WriteLine("Aguardando a jogada: " + game.NameColor());
+                if (game.check)
+                {
+                    Console.WriteLine("XEQUE!");
+                    Console.WriteLine();
+                }
+            }
+            else
+            {
+                Console.WriteLine("XEQUEMATE!");
+                Console.WriteLine("Vencedor: " + game.NameColor());
             }
         }
         public static void PrintGame(GameController game, bool[,] movementsAllowed)
@@ -28,13 +35,23 @@ namespace xadrez_console_2021
             Console.WriteLine();
             PrintPiesesCaptured(game);
             Console.WriteLine("Turno: " + game.turn);
-            Console.WriteLine("Aguardando a jogada: " + game.NameColor());
+            
             Console.WriteLine();
-            if (game.check)
+            if (!game.endGame)
             {
-                Console.WriteLine("XEQUE!");
-                Console.WriteLine();
+                Console.WriteLine("Aguardando a jogada: " + game.NameColor());
+                if (game.check)
+                {
+                    Console.WriteLine("XEQUE!");
+                    Console.WriteLine();
+                }
             }
+            else
+            {
+                Console.WriteLine("XEQUEMATE!");
+                Console.WriteLine("Vencedor: " + game.NameColor());
+            }            
+            
         }
         public static void PrintPiesesCaptured(GameController game)
         {
@@ -114,7 +131,6 @@ namespace xadrez_console_2021
             return new PositionChess(column, row);
         }
 
-
         public static void PrintPiece(Piece piece)
         {
             if (piece == null)
@@ -138,7 +154,6 @@ namespace xadrez_console_2021
                 Console.Write(" ");
             }
         }
-
 
     }
 }

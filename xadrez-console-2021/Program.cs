@@ -40,18 +40,17 @@ namespace xadrez_console_2021
                         Console.WriteLine(e.Message);
                         Console.ReadLine();
                     }
-                    
-
                 }
-
-                
+                if (game.endGame)
+                {
+                    Console.Clear();
+                    Screen.PrintGame(game);
+                }
             }
             catch (TableException e)
             {
                 Console.WriteLine(e.Message);
             }
         }
-
-
     }
 }

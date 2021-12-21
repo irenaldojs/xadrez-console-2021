@@ -38,16 +38,24 @@ namespace chess
         public void PlayTurn(Position origin, Position destin)
         {
             Piece capturePiece = PlayMove(origin, destin);
-            if (isInCheck(currentPlayer))
+            if (IsInCheck(currentPlayer))
             {
                 CancelMove(origin, destin, capturePiece);
                 throw new TableException("Você não pode se colocar em xeque!");
             }
 
-            check = isInCheck(Target(currentPlayer));
+            check = IsInCheck(Target(currentPlayer));
 
-            turn++;
-            ChangePlayer();
+            if (IsInCheckMate(Target(currentPlayer)))
+            {
+                endGame = true;
+            }
+            else
+            {
+                turn++;
+                ChangePlayer();
+            }
+
 
         }
         private void CancelMove(Position origin, Position destin, Piece capturePiece)
@@ -68,7 +76,6 @@ namespace chess
             else
                 currentPlayer = Color.White;
         }
-
         public void ValidatePositionOfOrigin(Position pos)
         {
             if (tab.GetPiece(pos) == null)
@@ -84,7 +91,6 @@ namespace chess
                 throw new TableException("Não há movimentos possíveis para a peça de origem escolhida!");
             }
         }
-
         public void ValidatePositionOfDestin(Position origin, Position destin)
         {
             if (!tab.GetPiece(origin).CanMoveTo(destin))
@@ -93,8 +99,6 @@ namespace chess
             }
 
         }
-
-
         public HashSet<Piece> PiecesCapturedColor(Color color)
         {
             HashSet<Piece> aux = new HashSet<Piece>();
@@ -105,7 +109,6 @@ namespace chess
             }
             return aux;
         }
-
         public HashSet<Piece> PiecesInGameColor(Color color)
         {
             HashSet<Piece> aux = new HashSet<Piece>();
@@ -118,7 +121,6 @@ namespace chess
 
             return aux;
         }
-
         public string NameColor()
         {
             if (currentPlayer == Color.White)
@@ -126,7 +128,6 @@ namespace chess
             else
                 return "Preta";
         }
-
         private Color Target(Color color)
         {
             if (color == Color.White)
@@ -134,7 +135,6 @@ namespace chess
             else
                 return Color.White;
         }
-
         private Piece GetKing(Color color)
         {
 
@@ -152,8 +152,7 @@ namespace chess
             }
             return null;
         }
-
-        private bool isInCheck(Color color)
+        private bool IsInCheck(Color color)
         {
             Piece r = GetKing(color);
 
@@ -168,13 +167,38 @@ namespace chess
             }
             return false;
         }
+        public bool IsInCheckMate(Color color)
+        {
+            if (!IsInCheck(color))
+                return false;
 
+            foreach(Piece x in PiecesInGameColor(color))
+            {
+                bool[,] mat = x.MovementsAllowed();
+                for(int i = 0; i<tab.Rows; i++)
+                {
+                    for(int j = 0; j<tab.Colunms; j++)
+                    {
+                        if (mat[i, j])
+                        {
+                            Position origin = x.position;
+                            Position destin = new Position(i, j);
+                            Piece capturedPiece = PlayMove(origin, destin);
+                            bool testCheck = IsInCheck(color);
+                            CancelMove(origin, destin, capturedPiece);
+                            if (!testCheck)
+                                return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
         public void InsertNewPiece(char column, int row, Piece piece)
         {
             tab.PlacePiece(piece, new PositionChess(column, row).ToPosition());
             pieces.Add(piece);
         }
-
         private void InsertPieces()
         {
             InsertNewPiece('c', 1, new Tower(tab, Color.White));
@@ -184,8 +208,8 @@ namespace chess
             InsertNewPiece('e', 1, new Tower(tab, Color.White));
             InsertNewPiece('d', 1, new King(tab, Color.White));
             // ----------------------------- //
-            InsertNewPiece('c', 7, new Tower(tab, Color.Black));
-            InsertNewPiece('c', 8, new Tower(tab, Color.Black));
+            // InsertNewPiece('c', 7, new Tower(tab, Color.Black));
+            // InsertNewPiece('c', 8, new Tower(tab, Color.Black));
             InsertNewPiece('d', 7, new Tower(tab, Color.Black));
             InsertNewPiece('e', 7, new Tower(tab, Color.Black));
             InsertNewPiece('e', 8, new Tower(tab, Color.Black));
