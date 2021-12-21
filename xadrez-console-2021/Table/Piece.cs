@@ -44,6 +44,11 @@ namespace table
         {
             numberSteps++;
         }
+        public void DecreaseStep()
+        {
+            numberSteps--;
+        }
+
 
         public abstract bool[,] MovementsAllowed();
     }

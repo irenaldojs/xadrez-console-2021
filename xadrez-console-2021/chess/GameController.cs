@@ -13,7 +13,7 @@ namespace chess
         public bool endGame { get; set; }
         private HashSet<Piece> pieces;
         private HashSet<Piece> captured;
-
+        public bool check { get; private set; }
         public GameController()
         {
             tab = new Table(8, 8);
@@ -25,7 +25,7 @@ namespace chess
             InsertPieces();
         }
 
-        public void PlayMove(Position origin, Position destin)
+        public Piece PlayMove(Position origin, Position destin)
         {
             Piece p = tab.RemovePiece(origin);
             p.AdStep();
@@ -33,8 +33,42 @@ namespace chess
             tab.PlacePiece(p, destin);
             if(capturePiece != null)
                 captured.Add(capturePiece);
+            return capturePiece;
+        }
+        public void PlayTurn(Position origin, Position destin)
+        {
+            Piece capturePiece = PlayMove(origin, destin);
+            if (isInCheck(currentPlayer))
+            {
+                CancelMove(origin, destin, capturePiece);
+                throw new TableException("Você não pode se colocar em xeque!");
+            }
+
+            check = isInCheck(Target(currentPlayer));
+
+            turn++;
+            ChangePlayer();
 
         }
+        private void CancelMove(Position origin, Position destin, Piece capturePiece)
+        {
+            Piece p = tab.RemovePiece(destin);
+            p.DecreaseStep();
+            if(capturePiece != null)
+            {
+                tab.PlacePiece(capturePiece, destin);
+                captured.Remove(capturePiece);
+            }
+            tab.PlacePiece(p, origin);
+        }
+        private void ChangePlayer()
+        {
+            if (currentPlayer == Color.White)
+                currentPlayer = Color.Black;
+            else
+                currentPlayer = Color.White;
+        }
+
         public void ValidatePositionOfOrigin(Position pos)
         {
             if (tab.GetPiece(pos) == null)
@@ -60,20 +94,6 @@ namespace chess
 
         }
 
-        public void PlayTurn(Position origin, Position destin)
-        {
-            PlayMove(origin, destin);
-            turn++;
-            ChangePlayer();
-
-        }
-        private void ChangePlayer()
-        {
-            if (currentPlayer == Color.White)
-                currentPlayer = Color.Black;
-            else
-                currentPlayer = Color.White;
-        }
 
         public HashSet<Piece> PiecesCapturedColor(Color color)
         {
@@ -89,7 +109,7 @@ namespace chess
         public HashSet<Piece> PiecesInGameColor(Color color)
         {
             HashSet<Piece> aux = new HashSet<Piece>();
-            foreach (Piece x in captured)
+            foreach (Piece x in pieces)
             {
                 if (x.color == color)
                     aux.Add(x);
@@ -105,6 +125,48 @@ namespace chess
                 return "Branca";
             else
                 return "Preta";
+        }
+
+        private Color Target(Color color)
+        {
+            if (color == Color.White)
+                return Color.Black;
+            else
+                return Color.White;
+        }
+
+        private Piece GetKing(Color color)
+        {
+
+            if(PiecesInGameColor(color).Count == 0)
+            {
+                throw new TableException("Sem contagem");
+            }
+
+            foreach(Piece x in PiecesInGameColor(color))
+            {
+                if (x is King)
+                {
+                    return x;
+                }
+            }
+            return null;
+        }
+
+        private bool isInCheck(Color color)
+        {
+            Piece r = GetKing(color);
+
+            if (r == null)
+                throw new TableException("Rei não instanciado!");
+
+            foreach(Piece x in PiecesInGameColor(Target(color)))
+            {
+                bool[,] mat = x.MovementsAllowed();
+                if (mat[r.position.Row, r.position.Colunm])
+                    return true;
+            }
+            return false;
         }
 
         public void InsertNewPiece(char column, int row, Piece piece)

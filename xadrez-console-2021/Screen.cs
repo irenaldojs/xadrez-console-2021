@@ -16,6 +16,11 @@ namespace xadrez_console_2021
             Console.WriteLine("Turno: " + game.turn);
             Console.WriteLine("Aguardando a jogada: " + game.NameColor());
             Console.WriteLine();
+            if (game.check)
+            {
+                Console.WriteLine("XEQUE!");
+                Console.WriteLine();
+            }
         }
         public static void PrintGame(GameController game, bool[,] movementsAllowed)
         {
@@ -25,6 +30,11 @@ namespace xadrez_console_2021
             Console.WriteLine("Turno: " + game.turn);
             Console.WriteLine("Aguardando a jogada: " + game.NameColor());
             Console.WriteLine();
+            if (game.check)
+            {
+                Console.WriteLine("XEQUE!");
+                Console.WriteLine();
+            }
         }
         public static void PrintPiesesCaptured(GameController game)
         {
@@ -38,7 +48,6 @@ namespace xadrez_console_2021
             PrintHashSet(game.PiecesCapturedColor(Color.Black));
             Console.ForegroundColor = aux;
             Console.WriteLine();
-
         }
 
         public static void PrintHashSet(HashSet<Piece> hashset)
@@ -92,9 +101,14 @@ namespace xadrez_console_2021
             Console.WriteLine("  a b c d e f g h");
         }
 
-        public static PositionChess ReadPositionChess()
+        public static PositionChess ReadPositionChess(GameController game)
         {
             string s = Console.ReadLine();
+            if (s == "sair")
+            {
+                game.endGame = true;
+                throw new TableException("Fim de jogo!");                
+            }
             char column = s[0];
             int row = int.Parse(s[1] + "");
             return new PositionChess(column, row);

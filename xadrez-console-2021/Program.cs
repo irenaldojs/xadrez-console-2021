@@ -20,7 +20,7 @@ namespace xadrez_console_2021
                         Screen.PrintGame(game);                    
 
                         Console.Write("Digite a origem: ");
-                        Position origim = Screen.ReadPositionChess().ToPosition();
+                        Position origim = Screen.ReadPositionChess(game).ToPosition();
                         game.ValidatePositionOfOrigin(origim);
 
                         bool[,] movementsAllowed = game.tab.GetPiece(origim).MovementsAllowed();
@@ -29,7 +29,7 @@ namespace xadrez_console_2021
 
                         Console.WriteLine();
                         Console.Write("Digite o destino: ");
-                        Position destin = Screen.ReadPositionChess().ToPosition();
+                        Position destin = Screen.ReadPositionChess(game).ToPosition();
                         game.ValidatePositionOfDestin(origim, destin);
 
                         game.PlayTurn(origim, destin);
