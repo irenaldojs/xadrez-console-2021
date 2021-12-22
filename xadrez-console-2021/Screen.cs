@@ -122,10 +122,15 @@ namespace xadrez_console_2021
         {
             string s = Console.ReadLine();
             char column = s[0];
-            int row = int.Parse(s[1] + "");
+            int row = 0;
+            bool convertRow = int.TryParse(s[1] + "", out row);
 
+            if(s.Length > 2 || !convertRow)
+            {
+                throw new TableException("Escolha inválida");
+            }
             return new PositionChess(column, row);
-           
+            
         }
         public static void PrintPiece(Piece piece)
         {

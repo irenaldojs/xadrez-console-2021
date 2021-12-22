@@ -36,7 +36,7 @@ namespace xadrez_console_2021
                 {
                     Console.WriteLine();
                     Console.WriteLine(e.Message);
-                    Console.ReadLine();
+                    string a = Console.ReadLine();
                 }
             }
             
