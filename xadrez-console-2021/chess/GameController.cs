@@ -82,6 +82,22 @@ namespace chess
                 CancelMove(origin, destin, capturePiece);
                 throw new TableException("Você não pode se colocar em xeque!");
             }
+            
+            Piece p = tab.GetPiece(destin);
+            
+            // PowerUp
+            if(p is Pawn)
+            {
+                if((p.color == Color.White && destin.Row == 0) ||
+                    (p.color == Color.Black && destin.Row == 7))
+                {
+                    p = tab.RemovePiece(destin);
+                    pieces.Remove(p);
+                    Piece queen = new Queen(tab, p.color);
+                    tab.PlacePiece(queen, destin);
+                    pieces.Add(queen);
+                }
+            }
 
             check = IsInCheck(Target(currentPlayer));
 
@@ -96,7 +112,7 @@ namespace chess
             }
 
             // Special Move - En Passant
-            Piece p = tab.GetPiece(destin);
+            
             if(p is Pawn &&(destin.Row == origin.Row + 2 || destin.Row == origin.Row - 2))
             {
                 enPassant = p;
