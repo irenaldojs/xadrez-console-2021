@@ -14,12 +14,14 @@ namespace chess
         private HashSet<Piece> pieces;
         private HashSet<Piece> captured;
         public bool check { get; private set; }
+        public Piece enPassant { get; private set; }
         public GameController()
         {
             tab = new Table(8, 8);
             turn = 1;
             currentPlayer = Color.White;
             endGame = false;
+            enPassant = null;
             pieces = new HashSet<Piece>();
             captured = new HashSet<Piece>();
             InsertPieces();
@@ -33,8 +35,8 @@ namespace chess
             tab.PlacePiece(p, destin);
             if(capturePiece != null)
                 captured.Add(capturePiece);
-            // Castle Kingside
-            if(p is King && destin.Colunm == origin.Colunm + 2)
+            // Special Move - Castle Kingside
+            if (p is King && destin.Colunm == origin.Colunm + 2)
             {
                 Position towerOrigin = new Position(origin.Row, origin.Colunm + 3);
                 Position towerDestin = new Position(origin.Row, origin.Colunm + 1);
@@ -42,7 +44,7 @@ namespace chess
                 tower.AdStep();
                 tab.PlacePiece(tower, towerDestin);
             }
-            // Castle Queenside
+            // Special Move - Castle Queenside
             if (p is King && destin.Colunm == origin.Colunm - 2)
             {
                 Position towerOrigin = new Position(origin.Row, origin.Colunm - 4);
@@ -51,6 +53,25 @@ namespace chess
                 tower.AdStep();
                 tab.PlacePiece(tower, towerDestin);
             }
+            // Special Move - En Passant
+            if( p is Pawn)
+            {
+                if(origin.Colunm != destin.Colunm && capturePiece == null)
+                {
+                    Position posP;
+                    if(p.color == Color.White)
+                    {
+                        posP = new Position(destin.Row + 1, destin.Colunm);
+                    }
+                    else
+                    {
+                        posP = new Position(destin.Row - 1, destin.Colunm);
+                    }
+                    capturePiece = tab.RemovePiece(posP);
+                    captured.Add(capturePiece);
+                }
+            }
+
             return capturePiece;
         }
         public void PlayTurn(Position origin, Position destin)
@@ -74,7 +95,16 @@ namespace chess
                 ChangePlayer();
             }
 
-
+            // Special Move - En Passant
+            Piece p = tab.GetPiece(destin);
+            if(p is Pawn &&(destin.Row == origin.Row + 2 || destin.Row == origin.Row - 2))
+            {
+                enPassant = p;
+            }
+            else
+            {
+                enPassant = null;
+            }
         }
         private void CancelMove(Position origin, Position destin, Piece capturePiece)
         {
@@ -87,7 +117,7 @@ namespace chess
             }
             tab.PlacePiece(p, origin);
 
-            // Castle Kingside
+            // Special Move - Castle Kingside
             if (p is King && destin.Colunm == origin.Colunm + 2)
             {
                 Position towerOrigin = new Position(origin.Row, origin.Colunm + 3);
@@ -96,7 +126,7 @@ namespace chess
                 tower.DecreaseStep();
                 tab.PlacePiece(tower, towerOrigin);
             }
-            // Castle Queenside
+            // Special Move - Castle Queenside
             if (p is King && destin.Colunm == origin.Colunm - 2)
             {
                 Position towerOrigin = new Position(origin.Row, origin.Colunm - 4);
@@ -105,6 +135,25 @@ namespace chess
                 tower.DecreaseStep();
                 tab.PlacePiece(tower, towerOrigin);
             }
+            // Special Move - En Passant
+            if(p is Pawn)
+            {
+                if(origin.Colunm != destin.Colunm && capturePiece == enPassant)
+                {
+                    Piece pawn = tab.RemovePiece(destin);
+                    Position posP;
+                    if(p.color == Color.White)
+                    {
+                        posP = new Position(3, destin.Colunm);
+                    }
+                    else
+                    {
+                        posP = new Position(4, destin.Colunm);
+                    }
+                    tab.PlacePiece(pawn, posP);
+                }
+            }
+
         }
         private void ChangePlayer()
         {
@@ -247,14 +296,14 @@ namespace chess
             InsertNewPiece('f', 1, new Bishop(tab, Color.White));
             InsertNewPiece('g', 1, new Horse(tab, Color.White));
             InsertNewPiece('h', 1, new Tower(tab, Color.White));
-            InsertNewPiece('a', 2, new Pawn(tab, Color.White));
-            InsertNewPiece('b', 2, new Pawn(tab, Color.White));
-            InsertNewPiece('c', 2, new Pawn(tab, Color.White));
-            InsertNewPiece('d', 2, new Pawn(tab, Color.White));
-            InsertNewPiece('e', 2, new Pawn(tab, Color.White));
-            InsertNewPiece('f', 2, new Pawn(tab, Color.White));
-            InsertNewPiece('g', 2, new Pawn(tab, Color.White));
-            InsertNewPiece('h', 2, new Pawn(tab, Color.White));
+            InsertNewPiece('a', 2, new Pawn(tab, Color.White, this));
+            InsertNewPiece('b', 2, new Pawn(tab, Color.White, this));
+            InsertNewPiece('c', 2, new Pawn(tab, Color.White, this));
+            InsertNewPiece('d', 2, new Pawn(tab, Color.White, this));
+            InsertNewPiece('e', 2, new Pawn(tab, Color.White, this));
+            InsertNewPiece('f', 2, new Pawn(tab, Color.White, this));
+            InsertNewPiece('g', 2, new Pawn(tab, Color.White, this));
+            InsertNewPiece('h', 2, new Pawn(tab, Color.White, this));
 
             // -- Brancas -- //
             InsertNewPiece('a', 8, new Tower(tab, Color.Black));
@@ -265,14 +314,14 @@ namespace chess
             InsertNewPiece('f', 8, new Bishop(tab, Color.Black));
             InsertNewPiece('g', 8, new Horse(tab, Color.Black));
             InsertNewPiece('h', 8, new Tower(tab, Color.Black));
-            InsertNewPiece('a', 7, new Pawn(tab, Color.Black));
-            InsertNewPiece('b', 7, new Pawn(tab, Color.Black));
-            InsertNewPiece('c', 7, new Pawn(tab, Color.Black));
-            InsertNewPiece('d', 7, new Pawn(tab, Color.Black));
-            InsertNewPiece('e', 7, new Pawn(tab, Color.Black));
-            InsertNewPiece('f', 7, new Pawn(tab, Color.Black));
-            InsertNewPiece('g', 7, new Pawn(tab, Color.Black));
-            InsertNewPiece('h', 7, new Pawn(tab, Color.Black));
+            InsertNewPiece('a', 7, new Pawn(tab, Color.Black, this));
+            InsertNewPiece('b', 7, new Pawn(tab, Color.Black, this));
+            InsertNewPiece('c', 7, new Pawn(tab, Color.Black, this));
+            InsertNewPiece('d', 7, new Pawn(tab, Color.Black, this));
+            InsertNewPiece('e', 7, new Pawn(tab, Color.Black, this));
+            InsertNewPiece('f', 7, new Pawn(tab, Color.Black, this));
+            InsertNewPiece('g', 7, new Pawn(tab, Color.Black, this));
+            InsertNewPiece('h', 7, new Pawn(tab, Color.Black, this));
 
 
         }

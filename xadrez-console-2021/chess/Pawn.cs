@@ -4,7 +4,11 @@ namespace chess
 {
     class Pawn : Piece
     {
-        public Pawn(Table tab, Color color) : base(tab, color) { }
+        private GameController game;
+        public Pawn(Table tab, Color color, GameController game) : base(tab, color) 
+        {
+            this.game = game;
+        }
         public override string ToString()
         {
             return "P";
@@ -52,6 +56,19 @@ namespace chess
                 {
                     mat[pos.Row, pos.Colunm] = true;
                 }
+
+                // Special Move - En Passant
+                if(position.Row == 3)
+                {
+                    Position left = new Position(position.Row, position.Colunm - 1);
+                    if (tab.ValidPosition(left) && ThereIsEnemy(left) && tab.GetPiece(left) == game.enPassant)
+                        mat[left.Row - 1, left.Colunm] = true;
+                    Position right = new Position(position.Row, position.Colunm + 1);
+                    if (tab.ValidPosition(right) && ThereIsEnemy(right) && tab.GetPiece(right) == game.enPassant)
+                        mat[right.Row - 1, right.Colunm] = true;
+                }
+
+
             }
             else
             {
@@ -77,6 +94,16 @@ namespace chess
                 if (tab.ValidPosition(pos) && ThereIsEnemy(pos))
                 {
                     mat[pos.Row, pos.Colunm] = true;
+                }
+                // Special Move - En Passant
+                if (position.Row == 4)
+                {
+                    Position left = new Position(position.Row, position.Colunm - 1);
+                    if (tab.ValidPosition(left) && ThereIsEnemy(left) && tab.GetPiece(left) == game.enPassant)
+                        mat[left.Row + 1, left.Colunm] = true;
+                    Position right = new Position(position.Row, position.Colunm + 1);
+                    if (tab.ValidPosition(right) && ThereIsEnemy(right) && tab.GetPiece(right) == game.enPassant)
+                        mat[right.Row + 1, right.Colunm] = true;
                 }
             }
             return mat;
