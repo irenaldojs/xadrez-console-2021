@@ -121,16 +121,12 @@ namespace xadrez_console_2021
         public static PositionChess ReadPositionChess(GameController game)
         {
             string s = Console.ReadLine();
-            if (s == "sair")
-            {
-                game.endGame = true;
-                throw new TableException("Fim de jogo!");                
-            }
             char column = s[0];
             int row = int.Parse(s[1] + "");
-            return new PositionChess(column, row);
-        }
 
+            return new PositionChess(column, row);
+           
+        }
         public static void PrintPiece(Piece piece)
         {
             if (piece == null)

@@ -33,6 +33,24 @@ namespace chess
             tab.PlacePiece(p, destin);
             if(capturePiece != null)
                 captured.Add(capturePiece);
+            // Castle Kingside
+            if(p is King && destin.Colunm == origin.Colunm + 2)
+            {
+                Position towerOrigin = new Position(origin.Row, origin.Colunm + 3);
+                Position towerDestin = new Position(origin.Row, origin.Colunm + 1);
+                Piece tower = tab.RemovePiece(towerOrigin);
+                tower.AdStep();
+                tab.PlacePiece(tower, towerDestin);
+            }
+            // Castle Queenside
+            if (p is King && destin.Colunm == origin.Colunm - 2)
+            {
+                Position towerOrigin = new Position(origin.Row, origin.Colunm - 4);
+                Position towerDestin = new Position(origin.Row, origin.Colunm - 1);
+                Piece tower = tab.RemovePiece(towerOrigin);
+                tower.AdStep();
+                tab.PlacePiece(tower, towerDestin);
+            }
             return capturePiece;
         }
         public void PlayTurn(Position origin, Position destin)
@@ -68,6 +86,25 @@ namespace chess
                 captured.Remove(capturePiece);
             }
             tab.PlacePiece(p, origin);
+
+            // Castle Kingside
+            if (p is King && destin.Colunm == origin.Colunm + 2)
+            {
+                Position towerOrigin = new Position(origin.Row, origin.Colunm + 3);
+                Position towerDestin = new Position(origin.Row, origin.Colunm + 1);
+                Piece tower = tab.RemovePiece(towerDestin);
+                tower.DecreaseStep();
+                tab.PlacePiece(tower, towerOrigin);
+            }
+            // Castle Queenside
+            if (p is King && destin.Colunm == origin.Colunm - 2)
+            {
+                Position towerOrigin = new Position(origin.Row, origin.Colunm - 4);
+                Position towerDestin = new Position(origin.Row, origin.Colunm - 1);
+                Piece tower = tab.RemovePiece(towerDestin);
+                tower.DecreaseStep();
+                tab.PlacePiece(tower, towerOrigin);
+            }
         }
         private void ChangePlayer()
         {
@@ -205,8 +242,8 @@ namespace chess
             InsertNewPiece('a', 1, new Tower(tab, Color.White));
             InsertNewPiece('b', 1, new Horse(tab, Color.White));
             InsertNewPiece('c', 1, new Bishop(tab, Color.White));
-            InsertNewPiece('d', 1, new King(tab, Color.White));
-            InsertNewPiece('e', 1, new Queen(tab, Color.White));
+            InsertNewPiece('d', 1, new Queen(tab, Color.White));
+            InsertNewPiece('e', 1, new King(tab, Color.White, this));
             InsertNewPiece('f', 1, new Bishop(tab, Color.White));
             InsertNewPiece('g', 1, new Horse(tab, Color.White));
             InsertNewPiece('h', 1, new Tower(tab, Color.White));
@@ -222,9 +259,9 @@ namespace chess
             // -- Brancas -- //
             InsertNewPiece('a', 8, new Tower(tab, Color.Black));
             InsertNewPiece('b', 8, new Horse(tab, Color.Black));
-            InsertNewPiece('c', 8, new Bishop(tab, Color.Black));
-            InsertNewPiece('d', 8, new King(tab, Color.Black));
-            InsertNewPiece('e', 8, new Queen(tab, Color.Black));
+            InsertNewPiece('c', 8, new Bishop(tab, Color.Black));            
+            InsertNewPiece('d', 8, new Queen(tab, Color.Black));
+            InsertNewPiece('e', 8, new King(tab, Color.Black, this));
             InsertNewPiece('f', 8, new Bishop(tab, Color.Black));
             InsertNewPiece('g', 8, new Horse(tab, Color.Black));
             InsertNewPiece('h', 8, new Tower(tab, Color.Black));
